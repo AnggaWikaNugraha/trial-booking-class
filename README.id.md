@@ -178,6 +178,18 @@ app/
   page.tsx                              halaman booking
   bookings/[id]/page.tsx                halaman status booking
   classes/[id]/roster/page.tsx          halaman roster
+  _components/                          bukan route (awalan _ mengecualikannya)
+    primitive/                          komponen form yang bisa dipakai ulang
+      select.tsx
+      input.tsx
+      form-field-group.tsx              label pembungkus field
+    booking-form/
+      booking-form.tsx                  client component yang merangkai section
+      class-list.tsx
+      hooks/                            state dan pengambilan data untuk form
+        use-booking-selection.ts
+        use-students.ts
+        use-classes.ts
   api/
     parents/[id]/students/route.ts
     classes/route.ts
@@ -188,11 +200,15 @@ app/
     payments/midtrans/notification/route.ts
 lib/
   supabase.ts                           Supabase server client
+  data.ts                               query baca yang dipakai halaman dan route handler
+  http.ts                               cek uuid dan helper error JSON
   midtrans.ts                           pembuatan transaksi Snap dan verifikasi signature
 supabase/
   migrations/                           skema, index, function confirm_payment
   seed.sql
 tests/
+  helpers/db.ts                         reset data dan fixture
+  *.test.ts                             memanggil route handler langsung, tanpa server
 ```
 
 </details>

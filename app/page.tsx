@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 import { listParents } from "@/lib/data";
-import { BookingForm } from "./booking-form";
+import { BookingForm } from "./_components/booking-form/booking-form";
 
 export default async function Home() {
   // Read the database per request, not once at build time.

@@ -178,6 +178,18 @@ app/
   page.tsx                              booking page
   bookings/[id]/page.tsx                booking status page
   classes/[id]/roster/page.tsx          roster page
+  _components/                          not a route (the _ prefix opts it out)
+    primitive/                          reusable form building blocks
+      select.tsx
+      input.tsx
+      form-field-group.tsx              label wrapper for a field
+    booking-form/
+      booking-form.tsx                  client component composing the sections
+      class-list.tsx
+      hooks/                            state and data fetching for the form
+        use-booking-selection.ts
+        use-students.ts
+        use-classes.ts
   api/
     parents/[id]/students/route.ts
     classes/route.ts
@@ -188,11 +200,15 @@ app/
     payments/midtrans/notification/route.ts
 lib/
   supabase.ts                           Supabase server client
+  data.ts                               read queries shared by pages and route handlers
+  http.ts                               uuid check and JSON error helper
   midtrans.ts                           Snap transaction creation and signature verification
 supabase/
   migrations/                           schema, indexes, confirm_payment function
   seed.sql
 tests/
+  helpers/db.ts                         data reset and fixtures
+  *.test.ts                             call route handlers directly, no server needed
 ```
 
 </details>

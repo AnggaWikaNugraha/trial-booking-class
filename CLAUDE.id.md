@@ -36,12 +36,19 @@ Tidak ada Supabase lokal atau Docker. Development, tes, dan demo Vercel memakai 
 - Setiap perubahan logika booking atau pembayaran harus disertai tes. Tes race N8 dan N9 wajib tetap lulus.
 - Jangan kerjakan yang ada di README bagian "Yang Sengaja Tidak Dikerjakan".
 
+## Konvensi UI
+
+- Komponen form yang bisa dipakai ulang ada di `app/_components/primitive/` (`Select`, `Input`, `FormFieldGroup`). Pakai ini, bukan `<select>` atau `<input>` mentah.
+- Setiap fitur punya folder di `app/_components/<fitur>/`. State dan pengambilan data masuk ke custom hook di folder `hooks/`; komponen hanya menerima props.
+- Jangan membungkus satu field dalam komponen sendiri. Rangkai `FormFieldGroup` + primitive langsung di komponen fitur.
+- Destructure hasil hook, dan beri alias untuk nama yang bentrok (`loading: studentsLoading`).
+
 ## Cara Kerja
 
 - Kerjakan TODO sesuai urutan flow.
 - Setiap flow dikerjakan lengkap: database, backend, UI, lalu tesnya.
 - Setelah satu item selesai dan tesnya lulus, ubah `[ ]` menjadi `[x]`.
-- Commit setiap selesai satu flow.
+- Setelah satu flow selesai, berhenti supaya saya bisa cek perubahannya. Commit hanya jika saya minta.
 
 ## TODO
 

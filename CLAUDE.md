@@ -38,12 +38,19 @@ There is no local Supabase or Docker. Development, tests, and the Vercel demo al
 - Every change to booking or payment logic must come with tests. The race tests N8 and N9 must keep passing.
 - Do not build anything listed in the README section "What Was Deliberately Cut".
 
+## UI Conventions
+
+- Reusable form building blocks live in `app/_components/primitive/` (`Select`, `Input`, `FormFieldGroup`). Use them instead of raw `<select>` or `<input>`.
+- Each feature gets a folder in `app/_components/<feature>/`. State and data fetching go in custom hooks under its `hooks/` folder; components only take props.
+- Do not wrap a single field in its own component. Compose `FormFieldGroup` + a primitive directly in the feature component.
+- Destructure hook results, and alias clashing names (`loading: studentsLoading`).
+
 ## How to Work
 
 - Work through the TODO in flow order.
 - Finish each flow completely: database, backend, UI, then its tests.
 - When an item is done and its tests pass, change `[ ]` to `[x]`.
-- Commit after each flow is finished.
+- After each flow, stop so the user can review the changes. Commit only when the user asks.
 
 ## TODO
 
