@@ -30,33 +30,36 @@ Sistem booking kelas trial untuk kelas online live Ottodot. Orang tua memilih an
 
 ### Lokal
 
-**Kebutuhan:** Node.js 20+, Docker (untuk Supabase lokal), akun Midtrans sandbox
+**Kebutuhan:** Node.js 20+, project Supabase (Postgres) di supabase.com, akun Midtrans sandbox
+
+Tidak ada database lokal. Development, tes, dan demo memakai satu project Supabase online.
 
 ```bash
 npm install
-npx supabase start
-npx supabase db reset        # membuat tabel, function, dan seed data
-cp .env.example .env.local   # isi variabel di bawah
-npm run dev                  # buka http://localhost:3000
-npm test                     # tes berjalan terhadap Supabase lokal
+npx supabase link --project-ref <project-ref>
+npx supabase db reset --linked   # membuat tabel, function, dan seed data di Supabase online
+cp .env.example .env.local       # isi variabel di bawah
+npm run dev                      # buka http://localhost:3000
+npm test                         # tes berjalan terhadap Supabase online
 ```
 
 | Environment variable | Keterangan |
 |---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | URL Supabase (dari output `npx supabase start`) |
+| `NEXT_PUBLIC_SUPABASE_URL` | URL project Supabase (Project Settings → API) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key Supabase |
 | `MIDTRANS_SERVER_KEY` | Server key Midtrans sandbox |
 | `NEXT_PUBLIC_MIDTRANS_CLIENT_KEY` | Client key Midtrans sandbox |
+
+> [!WARNING]
+> Tes mengosongkan data. Setelah `npm test`, jalankan lagi `npx supabase db reset --linked` untuk mengembalikan seed data.
 
 > [!NOTE]
 > Webhook Midtrans butuh URL publik. Untuk mencoba pembayaran end to end di lokal, pakai tunnel seperti ngrok. Tes otomatis tidak butuh ini karena tes mengirim notifikasi bertanda tangan langsung ke webhook.
 
 ### Deploy (Vercel + Supabase)
 
-1. Buat project di supabase.com, lalu jalankan `npx supabase link` dan `npx supabase db push`
-2. Jalankan `supabase/seed.sql` di SQL Editor Supabase
-3. Deploy ke Vercel dan isi environment variable yang sama
-4. Di dashboard Midtrans sandbox, atur Payment Notification URL ke `https://<app>.vercel.app/api/payments/midtrans/notification`
+1. Deploy ke Vercel dan isi environment variable yang sama. Database-nya project Supabase yang sama dengan di atas.
+2. Di dashboard Midtrans sandbox, atur Payment Notification URL ke `https://<app>.vercel.app/api/payments/midtrans/notification`
 
 ### Seed Data
 
