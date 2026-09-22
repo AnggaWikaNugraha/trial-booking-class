@@ -75,10 +75,10 @@ Parent ─► choose parent ─► GET /api/parents/:id/students ─► choose c
        ─► GET /api/classes (with remaining seats) ─► choose class
 ```
 
-- [ ] `GET /api/parents/:id/students`
-- [ ] `GET /api/classes` with remaining seats
-- [ ] Booking page UI: parent and child dropdowns, class list
-- [ ] Test P1
+- [x] `GET /api/parents/:id/students`
+- [x] `GET /api/classes` with remaining seats
+- [x] Booking page UI: parent and child dropdowns, class list
+- [x] Test P1
 
 ### Flow 2: Create Booking
 

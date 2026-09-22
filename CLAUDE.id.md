@@ -73,10 +73,10 @@ Orang tua ─► pilih orang tua ─► GET /api/parents/:id/students ─► pil
           ─► GET /api/classes (dengan sisa kursi) ─► pilih kelas
 ```
 
-- [ ] `GET /api/parents/:id/students`
-- [ ] `GET /api/classes` beserta sisa kursi
-- [ ] UI halaman booking: dropdown orang tua, anak, dan daftar kelas
-- [ ] Tes P1
+- [x] `GET /api/parents/:id/students`
+- [x] `GET /api/classes` beserta sisa kursi
+- [x] UI halaman booking: dropdown orang tua, anak, dan daftar kelas
+- [x] Tes P1
 
 ### Flow 2: Buat Booking
 
