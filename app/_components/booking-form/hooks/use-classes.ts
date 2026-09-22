@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { TrialClass } from "@/lib/data";
+import type { TrialClass } from "@/lib/data/list-classes";
 
 export function useClasses() {
   const [classes, setClasses] = useState<TrialClass[]>([]);

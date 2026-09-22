@@ -1,4 +1,5 @@
-import { listStudents, parentExists } from "@/lib/data";
+import { listStudents } from "@/lib/data/list-students";
+import { parentExists } from "@/lib/data/parent-exists";
 import { isUuid, jsonError } from "@/lib/http";
 
 export async function GET(_req: Request, ctx: RouteContext<"/api/parents/[id]/students">) {

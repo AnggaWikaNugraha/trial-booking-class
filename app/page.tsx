@@ -1,5 +1,5 @@
 import { connection } from "next/server";
-import { listParents } from "@/lib/data";
+import { listParents } from "@/lib/data/list-parents";
 import { BookingForm } from "./_components/booking-form/booking-form";
 
 export default async function Home() {

@@ -1,4 +1,4 @@
-import type { TrialClass } from "@/lib/data";
+import type { TrialClass } from "@/lib/data/list-classes";
 import { Input } from "../primitive/input";
 
 const dateFormat = new Intl.DateTimeFormat("en-GB", {

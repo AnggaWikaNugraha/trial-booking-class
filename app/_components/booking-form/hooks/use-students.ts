@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Student } from "@/lib/data";
+import type { Student } from "@/lib/data/list-students";
 
 type Result = { parentId: string; students: Student[]; error: string | null };
 

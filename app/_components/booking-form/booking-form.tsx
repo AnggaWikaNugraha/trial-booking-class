@@ -1,6 +1,6 @@
 "use client";
 
-import type { Parent } from "@/lib/data";
+import type { Parent } from "@/lib/data/list-parents";
 import { FormFieldGroup } from "../primitive/form-field-group";
 import { Select } from "../primitive/select";
 import { ClassList } from "./class-list";
