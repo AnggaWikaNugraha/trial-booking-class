@@ -182,6 +182,7 @@ app/
     primitive/                          reusable form building blocks
       select.tsx
       input.tsx
+      button.tsx
       form-field-group.tsx              label wrapper for a field
     booking-form/
       booking-form.tsx                  client component composing the sections
@@ -190,6 +191,9 @@ app/
         use-booking-selection.ts
         use-students.ts
         use-classes.ts
+        use-create-booking.ts
+    pending-bookings/
+      pending-bookings.tsx              server component: who is awaiting payment
   api/
     parents/[id]/students/route.ts
     classes/route.ts
@@ -205,6 +209,10 @@ lib/
     parent-exists.ts
     list-students.ts
     list-classes.ts
+    get-class.ts
+    student-belongs-to-parent.ts
+    create-booking.ts
+    list-pending-bookings.ts
   http.ts                               uuid check and JSON error helper
   midtrans.ts                           Snap transaction creation and signature verification
 supabase/
@@ -303,7 +311,7 @@ All endpoints accept and return JSON.
 |---|---|---|
 | `GET` | `/api/parents/:id/students` | List a parent's children |
 | `GET` | `/api/classes` | List trial classes with remaining seats |
-| `POST` | `/api/bookings` | Create a `pending_payment` booking. 409 on duplicate |
+| `POST` | `/api/bookings` | Create a `pending_payment` booking. 400 bad body, 403 child not the parent's, 404 unknown class, 409 duplicate or class already full |
 | `POST` | `/api/bookings/:id/pay` | Create a Midtrans Snap transaction, return the token or redirect URL |
 | `POST` | `/api/payments/midtrans/notification` | Midtrans webhook. Verifies the signature, then calls `confirm_payment` |
 | `GET` | `/api/bookings/:id` | Get the booking status |
@@ -395,7 +403,7 @@ If both notifications arrive at the same time, Postgres locks the class row duri
 | Layer | Checks |
 |---|---|
 | **UI** | Marks full classes, disables the pay button after it is clicked. For convenience only, not trusted |
-| **Backend** (route handler) | Input validation, checking the child belongs to the parent, Midtrans signature verification, mapping database errors to HTTP statuses |
+| **Backend** (route handler) | Input validation, checking the child belongs to the parent, rejecting a booking for a class that is already full (an early check that can be stale, not the guarantee), Midtrans signature verification, mapping database errors to HTTP statuses |
 | **Database** | Unique index against duplicates, conditional update and CHECK constraint against overbooking, `confirm_payment` for the transaction. The final source of truth |
 | **Background job** | Not built. Later used for refunding `rejected_class_full` bookings and reconciling with Midtrans |
 

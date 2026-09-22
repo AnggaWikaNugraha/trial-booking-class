@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function useBookingSelection() {
+export function useBookingSelection({ onChange }: { onChange?: () => void } = {}) {
   const [parentId, setParentId] = useState("");
   const [studentId, setStudentId] = useState("");
   const [classId, setClassId] = useState("");
@@ -9,14 +9,18 @@ export function useBookingSelection() {
     setParentId(id);
     // A child from the previous parent is no longer a valid choice.
     setStudentId("");
+    onChange?.();
   }
 
-  return {
-    parentId,
-    studentId,
-    classId,
-    chooseParent,
-    chooseStudent: setStudentId,
-    chooseClass: setClassId,
-  };
+  function chooseStudent(id: string) {
+    setStudentId(id);
+    onChange?.();
+  }
+
+  function chooseClass(id: string) {
+    setClassId(id);
+    onChange?.();
+  }
+
+  return { parentId, studentId, classId, chooseParent, chooseStudent, chooseClass };
 }

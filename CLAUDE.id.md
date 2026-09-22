@@ -38,7 +38,7 @@ Tidak ada Supabase lokal atau Docker. Development, tes, dan demo Vercel memakai 
 
 ## Konvensi UI
 
-- Komponen form yang bisa dipakai ulang ada di `app/_components/primitive/` (`Select`, `Input`, `FormFieldGroup`). Pakai ini, bukan `<select>` atau `<input>` mentah.
+- Komponen form yang bisa dipakai ulang ada di `app/_components/primitive/` (`Select`, `Input`, `Button`, `FormFieldGroup`). Pakai ini, bukan `<select>` atau `<input>` mentah.
 - Setiap fitur punya folder di `app/_components/<fitur>/`. State dan pengambilan data masuk ke custom hook di folder `hooks/`; komponen hanya menerima props.
 - Jangan membungkus satu field dalam komponen sendiri. Rangkai `FormFieldGroup` + primitive langsung di komponen fitur.
 - Destructure hasil hook, dan beri alias untuk nama yang bentrok (`loading: studentsLoading`).
@@ -94,10 +94,10 @@ Kirim booking ─► POST /api/bookings ─► insert bookings (pending_payment)
                                             └─► error 23505 ─► 409 duplikat
 ```
 
-- [ ] `POST /api/bookings` dengan validasi anak milik orang tua
-- [ ] Tangkap error `23505` dan kembalikan 409
-- [ ] UI tombol kirim booking dan pesan jika duplikat
-- [ ] Tes P2, N1, N2
+- [x] `POST /api/bookings` dengan validasi anak milik orang tua
+- [x] Tangkap error `23505` dan kembalikan 409
+- [x] UI tombol kirim booking dan pesan jika duplikat
+- [x] Tes P2, N1, N2
 
 ### Flow 3: Pembayaran Midtrans
 

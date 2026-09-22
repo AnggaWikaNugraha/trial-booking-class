@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { GET as getClasses } from "@/app/api/classes/route";
 import { GET as getStudents } from "@/app/api/parents/[id]/students/route";
-import { createClass, createParent, createStudent, resetDb } from "./helpers/db";
+import { listPendingBookings } from "@/lib/data/list-pending-bookings";
+import { createBooking, createClass, createParent, createStudent, resetDb } from "./helpers/db";
 
 function studentsOf(id: string) {
   return getStudents(new Request(`http://test/api/parents/${id}/students`), {
@@ -39,6 +40,28 @@ describe("P1: parent chooses a child and an available class", () => {
       classes.map((c: { subject: string; remaining_seats: number }) => [c.subject, c.remaining_seats]),
     );
     expect(seats).toEqual({ Open: 3, "Last seat": 1, Full: 0 });
+  });
+
+  it("lists who is awaiting payment, without taking seats", async () => {
+    const parent = await createParent();
+    const [a, b, c] = await Promise.all([
+      createStudent(parent.id, "A"),
+      createStudent(parent.id, "B"),
+      createStudent(parent.id, "C"),
+    ]);
+    const cls = await createClass({ subject: "Last seat", confirmedCount: 3 });
+    await createBooking(a.id, cls.id, "pending_payment");
+    await createBooking(b.id, cls.id, "pending_payment");
+    await createBooking(c.id, cls.id, "payment_failed");
+
+    const pending = await listPendingBookings();
+    const { classes } = await (await getClasses()).json();
+
+    expect(pending.map((p) => [p.student_name, p.class_subject]).sort()).toEqual([
+      ["A", "Last seat"],
+      ["B", "Last seat"],
+    ]);
+    expect(classes[0].remaining_seats).toBe(1);
   });
 
   it("returns 404 for an unknown parent", async () => {

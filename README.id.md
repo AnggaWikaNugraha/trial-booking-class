@@ -182,6 +182,7 @@ app/
     primitive/                          komponen form yang bisa dipakai ulang
       select.tsx
       input.tsx
+      button.tsx
       form-field-group.tsx              label pembungkus field
     booking-form/
       booking-form.tsx                  client component yang merangkai section
@@ -190,6 +191,9 @@ app/
         use-booking-selection.ts
         use-students.ts
         use-classes.ts
+        use-create-booking.ts
+    pending-bookings/
+      pending-bookings.tsx              server component: siapa yang menunggu pembayaran
   api/
     parents/[id]/students/route.ts
     classes/route.ts
@@ -205,6 +209,10 @@ lib/
     parent-exists.ts
     list-students.ts
     list-classes.ts
+    get-class.ts
+    student-belongs-to-parent.ts
+    create-booking.ts
+    list-pending-bookings.ts
   http.ts                               cek uuid dan helper error JSON
   midtrans.ts                           pembuatan transaksi Snap dan verifikasi signature
 supabase/
@@ -303,7 +311,7 @@ Semua endpoint menerima dan mengembalikan JSON.
 |---|---|---|
 | `GET` | `/api/parents/:id/students` | Daftar anak milik orang tua |
 | `GET` | `/api/classes` | Daftar kelas trial beserta sisa kursi |
-| `POST` | `/api/bookings` | Membuat booking `pending_payment`. 409 jika duplikat |
+| `POST` | `/api/bookings` | Membuat booking `pending_payment`. 400 body tidak valid, 403 anak bukan milik orang tua, 404 kelas tidak ada, 409 duplikat atau kelas sudah penuh |
 | `POST` | `/api/bookings/:id/pay` | Membuat transaksi Midtrans Snap, mengembalikan token atau redirect URL |
 | `POST` | `/api/payments/midtrans/notification` | Webhook Midtrans. Verifikasi signature, lalu memanggil `confirm_payment` |
 | `GET` | `/api/bookings/:id` | Melihat status booking |
@@ -395,7 +403,7 @@ Jika kedua notifikasi masuk bersamaan, Postgres mengunci baris kelas selama upda
 | Lapisan | Pengecekan |
 |---|---|
 | **UI** | Menandai kelas penuh, menonaktifkan tombol bayar setelah diklik. Hanya untuk kenyamanan, tidak dipercaya |
-| **Backend** (route handler) | Validasi input, memastikan anak milik orang tua, verifikasi signature Midtrans, menerjemahkan error database ke status HTTP |
+| **Backend** (route handler) | Validasi input, memastikan anak milik orang tua, menolak booking di kelas yang sudah penuh (cek awal yang bisa basi, bukan jaminan), verifikasi signature Midtrans, menerjemahkan error database ke status HTTP |
 | **Database** | Unique index untuk anti duplikat, update bersyarat dan CHECK constraint untuk anti overbooking, `confirm_payment` untuk transaksi. Sumber kebenaran terakhir |
 | **Background job** | Tidak dibuat. Nantinya untuk refund `rejected_class_full` dan rekonsiliasi dengan Midtrans |
 

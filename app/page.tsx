@@ -1,6 +1,7 @@
 import { connection } from "next/server";
 import { listParents } from "@/lib/data/list-parents";
 import { BookingForm } from "./_components/booking-form/booking-form";
+import { PendingBookings } from "./_components/pending-bookings/pending-bookings";
 
 export default async function Home() {
   // Read the database per request, not once at build time.
@@ -14,6 +15,7 @@ export default async function Home() {
         Choose your child and a class. Each trial class has 4 seats.
       </p>
       <BookingForm parents={parents} />
+      <PendingBookings />
     </main>
   );
 }

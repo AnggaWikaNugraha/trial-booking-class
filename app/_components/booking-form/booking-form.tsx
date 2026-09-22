@@ -1,23 +1,28 @@
 "use client";
 
 import type { Parent } from "@/lib/data/list-parents";
+import { Button } from "../primitive/button";
 import { FormFieldGroup } from "../primitive/form-field-group";
 import { Select } from "../primitive/select";
 import { ClassList } from "./class-list";
 import { useBookingSelection } from "./hooks/use-booking-selection";
 import { useClasses } from "./hooks/use-classes";
+import { useCreateBooking } from "./hooks/use-create-booking";
 import { useStudents } from "./hooks/use-students";
 
 export function BookingForm({ parents }: { parents: Parent[] }) {
+  const { booking, submitting, error: bookingError, createBooking, clearResult } =
+    useCreateBooking();
   const { parentId, studentId, classId, chooseParent, chooseStudent, chooseClass } =
-    useBookingSelection();
+    useBookingSelection({ onChange: clearResult });
   const { students, loading: studentsLoading, error: studentsError } = useStudents(parentId);
   const { classes, loading: classesLoading, error: classesError } = useClasses();
-  const error = studentsError ?? classesError;
+  const loadError = studentsError ?? classesError;
+  const canSubmit = Boolean(parentId && studentId && classId) && !submitting;
 
   return (
     <div className="mt-8 space-y-6">
-      {error && <p className="rounded bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+      {loadError && <p className="rounded bg-red-50 p-3 text-sm text-red-700">{loadError}</p>}
 
       <FormFieldGroup label="Parent">
         <Select
@@ -39,6 +44,19 @@ export function BookingForm({ parents }: { parents: Parent[] }) {
       </FormFieldGroup>
 
       <ClassList classes={classes} loading={classesLoading} value={classId} onChange={chooseClass} />
+
+      <Button disabled={!canSubmit} onClick={() => createBooking({ parentId, studentId, classId })}>
+        {submitting ? "Booking..." : "Book trial class"}
+      </Button>
+
+      {bookingError && (
+        <p className="rounded bg-red-50 p-3 text-sm text-red-700">{bookingError}</p>
+      )}
+      {booking && (
+        <p className="rounded bg-green-50 p-3 text-sm text-green-800">
+          Booking created. Status: <code>{booking.status}</code>
+        </p>
+      )}
     </div>
   );
 }

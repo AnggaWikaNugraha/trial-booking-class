@@ -40,7 +40,7 @@ There is no local Supabase or Docker. Development, tests, and the Vercel demo al
 
 ## UI Conventions
 
-- Reusable form building blocks live in `app/_components/primitive/` (`Select`, `Input`, `FormFieldGroup`). Use them instead of raw `<select>` or `<input>`.
+- Reusable form building blocks live in `app/_components/primitive/` (`Select`, `Input`, `Button`, `FormFieldGroup`). Use them instead of raw `<select>` or `<input>`.
 - Each feature gets a folder in `app/_components/<feature>/`. State and data fetching go in custom hooks under its `hooks/` folder; components only take props.
 - Do not wrap a single field in its own component. Compose `FormFieldGroup` + a primitive directly in the feature component.
 - Destructure hook results, and alias clashing names (`loading: studentsLoading`).
@@ -96,10 +96,10 @@ Submit booking ─► POST /api/bookings ─► insert bookings (pending_payment
                                              └─► error 23505 ─► 409 duplicate
 ```
 
-- [ ] `POST /api/bookings` with validation that the child belongs to the parent
-- [ ] Catch error `23505` and return 409
-- [ ] UI submit button and duplicate message
-- [ ] Tests P2, N1, N2
+- [x] `POST /api/bookings` with validation that the child belongs to the parent
+- [x] Catch error `23505` and return 409
+- [x] UI submit button and duplicate message
+- [x] Tests P2, N1, N2
 
 ### Flow 3: Midtrans Payment
 
