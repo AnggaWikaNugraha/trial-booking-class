@@ -51,7 +51,7 @@ npm test                         # tests run against online Supabase
 | `NEXT_PUBLIC_MIDTRANS_CLIENT_KEY` | Midtrans sandbox client key |
 
 > [!WARNING]
-> Tests wipe the data. After `npm test`, run `npx supabase db reset --linked` again to restore the seed data.
+> Tests wipe the data. After `npm test`, click **Reset demo data** in the app, or run `npx supabase db reset --linked`, to restore the seed data.
 
 > [!NOTE]
 > The Midtrans webhook needs a public URL. To try payment end to end locally, use a tunnel such as ngrok. The automated tests do not need this, because they send signed notifications directly to the webhook.
@@ -71,6 +71,7 @@ npm test                         # tests run against online Supabase
 
 - **Duplicate booking:** one child is already `confirmed` in Science Trial A. Try booking the same child into that class.
 - **Payment failure:** use a declined test card, or let the transaction expire in the Midtrans sandbox.
+- **Starting over:** the **Reset demo data** button restores this state. The data is defined once, in the Postgres function `reset_demo_data()`, which both `seed.sql` and the button call.
 
 ### Manual Demo Steps
 
@@ -182,7 +183,7 @@ app/
     primitive/                          reusable form building blocks
       select.tsx
       input.tsx
-      button.tsx
+      button.tsx                        primary and secondary variants
       form-field-group.tsx              label wrapper for a field
     booking-form/
       booking-form.tsx                  client component composing the sections
@@ -194,6 +195,7 @@ app/
         use-create-booking.ts
     pending-bookings/
       pending-bookings.tsx              server component: who is awaiting payment
+    reset-demo/                         client button and hook for the demo reset
   api/
     parents/[id]/students/route.ts
     classes/route.ts
@@ -202,6 +204,7 @@ app/
     bookings/[id]/route.ts
     bookings/[id]/pay/route.ts
     payments/midtrans/notification/route.ts
+    demo/reset/route.ts
 lib/
   supabase.ts                           Supabase server client
   data/                                 one query function per file, shared by pages and route handlers
@@ -213,11 +216,12 @@ lib/
     student-belongs-to-parent.ts
     create-booking.ts
     list-pending-bookings.ts
+    reset-demo-data.ts
   http.ts                               uuid check and JSON error helper
   midtrans.ts                           Snap transaction creation and signature verification
 supabase/
-  migrations/                           schema, indexes, confirm_payment function
-  seed.sql
+  migrations/                           schema, indexes, confirm_payment and reset_demo_data functions
+  seed.sql                              select reset_demo_data();
 tests/
   helpers/db.ts                         data reset and fixtures
   *.test.ts                             call route handlers directly, no server needed
@@ -316,6 +320,7 @@ All endpoints accept and return JSON.
 | `POST` | `/api/payments/midtrans/notification` | Midtrans webhook. Verifies the signature, then calls `confirm_payment` |
 | `GET` | `/api/bookings/:id` | Get the booking status |
 | `GET` | `/api/classes/:id/roster` | List confirmed students |
+| `POST` | `/api/demo/reset` | Demo only. Deletes all bookings and restores the seed via `reset_demo_data()` |
 
 ### Preventing Duplicate Bookings
 

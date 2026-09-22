@@ -51,7 +51,7 @@ npm test                         # tes berjalan terhadap Supabase online
 | `NEXT_PUBLIC_MIDTRANS_CLIENT_KEY` | Client key Midtrans sandbox |
 
 > [!WARNING]
-> Tes mengosongkan data. Setelah `npm test`, jalankan lagi `npx supabase db reset --linked` untuk mengembalikan seed data.
+> Tes mengosongkan data. Setelah `npm test`, klik **Reset demo data** di aplikasi, atau jalankan `npx supabase db reset --linked`, untuk mengembalikan seed data.
 
 > [!NOTE]
 > Webhook Midtrans butuh URL publik. Untuk mencoba pembayaran end to end di lokal, pakai tunnel seperti ngrok. Tes otomatis tidak butuh ini karena tes mengirim notifikasi bertanda tangan langsung ke webhook.
@@ -71,6 +71,7 @@ npm test                         # tes berjalan terhadap Supabase online
 
 - **Booking ganda:** satu anak sudah `confirmed` di Science Trial A. Coba booking anak yang sama di kelas itu.
 - **Pembayaran gagal:** pakai kartu uji yang ditolak, atau biarkan transaksi kedaluwarsa di sandbox Midtrans.
+- **Mulai ulang:** tombol **Reset demo data** mengembalikan kondisi ini. Datanya hanya didefinisikan di satu tempat, yaitu Postgres function `reset_demo_data()`, yang dipanggil oleh `seed.sql` maupun tombol itu.
 
 ### Langkah Demo Manual
 
@@ -182,7 +183,7 @@ app/
     primitive/                          komponen form yang bisa dipakai ulang
       select.tsx
       input.tsx
-      button.tsx
+      button.tsx                        varian primary dan secondary
       form-field-group.tsx              label pembungkus field
     booking-form/
       booking-form.tsx                  client component yang merangkai section
@@ -194,6 +195,7 @@ app/
         use-create-booking.ts
     pending-bookings/
       pending-bookings.tsx              server component: siapa yang menunggu pembayaran
+    reset-demo/                         tombol client dan hook untuk reset demo
   api/
     parents/[id]/students/route.ts
     classes/route.ts
@@ -202,6 +204,7 @@ app/
     bookings/[id]/route.ts
     bookings/[id]/pay/route.ts
     payments/midtrans/notification/route.ts
+    demo/reset/route.ts
 lib/
   supabase.ts                           Supabase server client
   data/                                 satu fungsi query per file, dipakai halaman dan route handler
@@ -213,11 +216,12 @@ lib/
     student-belongs-to-parent.ts
     create-booking.ts
     list-pending-bookings.ts
+    reset-demo-data.ts
   http.ts                               cek uuid dan helper error JSON
   midtrans.ts                           pembuatan transaksi Snap dan verifikasi signature
 supabase/
-  migrations/                           skema, index, function confirm_payment
-  seed.sql
+  migrations/                           skema, index, function confirm_payment dan reset_demo_data
+  seed.sql                              select reset_demo_data();
 tests/
   helpers/db.ts                         reset data dan fixture
   *.test.ts                             memanggil route handler langsung, tanpa server
@@ -316,6 +320,7 @@ Semua endpoint menerima dan mengembalikan JSON.
 | `POST` | `/api/payments/midtrans/notification` | Webhook Midtrans. Verifikasi signature, lalu memanggil `confirm_payment` |
 | `GET` | `/api/bookings/:id` | Melihat status booking |
 | `GET` | `/api/classes/:id/roster` | Daftar murid terkonfirmasi |
+| `POST` | `/api/demo/reset` | Khusus demo. Menghapus semua booking dan mengembalikan seed lewat `reset_demo_data()` |
 
 ### Mencegah Booking Ganda
 

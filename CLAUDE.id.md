@@ -21,7 +21,8 @@ Stack:
 - `npx supabase db push` memasang migrasi baru ke Supabase online
 - `npx supabase db reset --linked` menghapus semua data, menjalankan ulang migrasi dan seed di Supabase online
 - `npm run dev` menjalankan aplikasi
-- `npm test` menjalankan semua tes terhadap Supabase online. Tes mengosongkan data, jadi jalankan `db reset --linked` setelahnya untuk mengembalikan seed
+- `npm test` menjalankan semua tes terhadap Supabase online. Tes mengosongkan data, jadi jalankan `db reset --linked` (atau klik **Reset demo data** di aplikasi) setelahnya untuk mengembalikan seed. Beri tahu saya sebelum menjalankan tes, karena aplikasi yang mungkin sedang saya pakai jadi kosong
+- Data demo hanya didefinisikan di Postgres function `reset_demo_data()`. `seed.sql` hanya memanggilnya. Ubah data demo lewat migrasi baru yang mengganti function itu
 
 Tidak ada Supabase lokal atau Docker. Development, tes, dan demo Vercel memakai satu project Supabase online (Postgres).
 
@@ -38,7 +39,7 @@ Tidak ada Supabase lokal atau Docker. Development, tes, dan demo Vercel memakai 
 
 ## Konvensi UI
 
-- Komponen form yang bisa dipakai ulang ada di `app/_components/primitive/` (`Select`, `Input`, `Button`, `FormFieldGroup`). Pakai ini, bukan `<select>` atau `<input>` mentah.
+- Komponen form yang bisa dipakai ulang ada di `app/_components/primitive/` (`Select`, `Input`, `Button`, `FormFieldGroup`). Pakai ini, bukan `<select>`, `<input>`, atau `<button>` mentah. `Button` punya varian `primary` dan `secondary`.
 - Setiap fitur punya folder di `app/_components/<fitur>/`. State dan pengambilan data masuk ke custom hook di folder `hooks/`; komponen hanya menerima props.
 - Jangan membungkus satu field dalam komponen sendiri. Rangkai `FormFieldGroup` + primitive langsung di komponen fitur.
 - Destructure hasil hook, dan beri alias untuk nama yang bentrok (`loading: studentsLoading`).

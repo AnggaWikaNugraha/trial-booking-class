@@ -23,7 +23,8 @@ Stack:
 - `npx supabase db push` applies new migrations to online Supabase
 - `npx supabase db reset --linked` wipes all data and reruns migrations and seed on online Supabase
 - `npm run dev` runs the app
-- `npm test` runs all tests against online Supabase. Tests wipe the data, so run `db reset --linked` afterwards to restore the seed
+- `npm test` runs all tests against online Supabase. Tests wipe the data, so run `db reset --linked` (or click **Reset demo data** in the app) afterwards to restore the seed. Tell the user before running tests, since the app they may be using goes empty
+- Demo data is defined once, in the Postgres function `reset_demo_data()`. `seed.sql` only calls it. Change demo data with a new migration that replaces the function
 
 There is no local Supabase or Docker. Development, tests, and the Vercel demo all use one online Supabase project (Postgres).
 
@@ -40,7 +41,7 @@ There is no local Supabase or Docker. Development, tests, and the Vercel demo al
 
 ## UI Conventions
 
-- Reusable form building blocks live in `app/_components/primitive/` (`Select`, `Input`, `Button`, `FormFieldGroup`). Use them instead of raw `<select>` or `<input>`.
+- Reusable form building blocks live in `app/_components/primitive/` (`Select`, `Input`, `Button`, `FormFieldGroup`). Use them instead of raw `<select>`, `<input>`, or `<button>`. `Button` has `primary` and `secondary` variants.
 - Each feature gets a folder in `app/_components/<feature>/`. State and data fetching go in custom hooks under its `hooks/` folder; components only take props.
 - Do not wrap a single field in its own component. Compose `FormFieldGroup` + a primitive directly in the feature component.
 - Destructure hook results, and alias clashing names (`loading: studentsLoading`).
