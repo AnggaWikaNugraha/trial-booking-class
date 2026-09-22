@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+@AGENTS.md
+
 ## Context
 
 Ottodot take-home: a trial class booking system, capacity of 4 students per class. Focus on backend correctness, not UI. Scope is trial booking only.
@@ -56,15 +58,15 @@ There is no local Supabase or Docker. Development, tests, and the Vercel demo al
 Next.js + Tailwind ─► online Supabase ─► table migrations + constraints ─► seed ─► Vitest
 ```
 
-- [ ] Initialize Next.js with TypeScript and Tailwind
-- [ ] Create the online Supabase project, `npx supabase init`, then `npx supabase link`
-- [ ] Create `.env.example`
-- [ ] Migrations for tables `parents`, `students`, `trial_classes`, `bookings`, `payment_attempts`
-- [ ] Partial unique index against duplicate bookings
-- [ ] CHECK constraint `confirmed_count <= capacity`
-- [ ] `supabase/seed.sql` (classes with 1, 3, and 4 confirmed students)
-- [ ] `lib/supabase.ts` (server client with the service role)
-- [ ] Vitest config and a test data reset helper
+- [x] Initialize Next.js with TypeScript and Tailwind
+- [x] Create the online Supabase project, `npx supabase init`, then `npx supabase link`
+- [x] Create `.env.example`
+- [x] Migrations for tables `parents`, `students`, `trial_classes`, `bookings`, `payment_attempts`
+- [x] Partial unique index against duplicate bookings
+- [x] CHECK constraint `confirmed_count <= capacity`
+- [x] `supabase/seed.sql` (classes with 1, 3, and 4 confirmed students)
+- [x] `lib/supabase.ts` (server client with the service role)
+- [x] Vitest config and a test data reset helper
 
 ### Flow 1: Choose Child and Class
 

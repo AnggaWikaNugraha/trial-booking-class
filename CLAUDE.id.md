@@ -56,15 +56,15 @@ Tidak ada Supabase lokal atau Docker. Development, tes, dan demo Vercel memakai 
 Next.js + Tailwind ─► Supabase online ─► migrasi tabel + constraint ─► seed ─► Vitest
 ```
 
-- [ ] Inisialisasi Next.js dengan TypeScript dan Tailwind
-- [ ] Buat project Supabase online, `npx supabase init`, lalu `npx supabase link`
-- [ ] Buat `.env.example`
-- [ ] Migrasi tabel `parents`, `students`, `trial_classes`, `bookings`, `payment_attempts`
-- [ ] Partial unique index anti booking ganda
-- [ ] CHECK constraint `confirmed_count <= capacity`
-- [ ] `supabase/seed.sql` (kelas dengan 1, 3, dan 4 murid terkonfirmasi)
-- [ ] `lib/supabase.ts` (server client dengan service role)
-- [ ] Konfigurasi Vitest dan helper reset data tes
+- [x] Inisialisasi Next.js dengan TypeScript dan Tailwind
+- [x] Buat project Supabase online, `npx supabase init`, lalu `npx supabase link`
+- [x] Buat `.env.example`
+- [x] Migrasi tabel `parents`, `students`, `trial_classes`, `bookings`, `payment_attempts`
+- [x] Partial unique index anti booking ganda
+- [x] CHECK constraint `confirmed_count <= capacity`
+- [x] `supabase/seed.sql` (kelas dengan 1, 3, dan 4 murid terkonfirmasi)
+- [x] `lib/supabase.ts` (server client dengan service role)
+- [x] Konfigurasi Vitest dan helper reset data tes
 
 ### Flow 1: Pilih Anak dan Kelas
 
