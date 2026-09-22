@@ -44,6 +44,7 @@ There is no local Supabase or Docker. Development, tests, and the Vercel demo al
 - Each feature gets a folder in `app/_components/<feature>/`. State and data fetching go in custom hooks under its `hooks/` folder; components only take props.
 - Do not wrap a single field in its own component. Compose `FormFieldGroup` + a primitive directly in the feature component.
 - Destructure hook results, and alias clashing names (`loading: studentsLoading`).
+- Database queries live in `lib/data/`, one function per file named after it (`list-parents.ts` exports `listParents`). A type sits in the file of the function that returns it. No barrel `index.ts`.
 
 ## How to Work
 

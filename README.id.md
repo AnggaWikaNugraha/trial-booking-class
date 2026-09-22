@@ -200,7 +200,11 @@ app/
     payments/midtrans/notification/route.ts
 lib/
   supabase.ts                           Supabase server client
-  data.ts                               query baca yang dipakai halaman dan route handler
+  data/                                 satu fungsi query per file, dipakai halaman dan route handler
+    list-parents.ts
+    parent-exists.ts
+    list-students.ts
+    list-classes.ts
   http.ts                               cek uuid dan helper error JSON
   midtrans.ts                           pembuatan transaksi Snap dan verifikasi signature
 supabase/

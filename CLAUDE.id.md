@@ -42,6 +42,7 @@ Tidak ada Supabase lokal atau Docker. Development, tes, dan demo Vercel memakai 
 - Setiap fitur punya folder di `app/_components/<fitur>/`. State dan pengambilan data masuk ke custom hook di folder `hooks/`; komponen hanya menerima props.
 - Jangan membungkus satu field dalam komponen sendiri. Rangkai `FormFieldGroup` + primitive langsung di komponen fitur.
 - Destructure hasil hook, dan beri alias untuk nama yang bentrok (`loading: studentsLoading`).
+- Query database ada di `lib/data/`, satu fungsi per file dengan nama yang sama (`list-parents.ts` mengekspor `listParents`). Tipe diletakkan di file fungsi yang mengembalikannya. Tanpa barrel `index.ts`.
 
 ## Cara Kerja
 
