@@ -2,7 +2,7 @@
 
 Sistem booking kelas trial untuk kelas online live Ottodot. Orang tua memilih anak dan kelas trial, mengirim booking, membayar lewat Midtrans (sandbox), lalu melihat status booking. Admin atau guru bisa melihat roster murid terkonfirmasi untuk setiap kelas.
 
-**Demo:** [TODO link Vercel] · **Video walkthrough:** [TODO link]
+**Demo:** [trial-booking-class.vercel.app](https://trial-booking-class.vercel.app) · **Video walkthrough:** [TODO link]
 
 ## Ringkasan
 

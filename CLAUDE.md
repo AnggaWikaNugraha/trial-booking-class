@@ -168,9 +168,9 @@ Admin or teacher ─► GET /api/classes/:id/roster ─► confirmed bookings on
 Reseed (db reset --linked) ─► Vercel (env) ─► Midtrans notification URL ─► end-to-end test
 ```
 
-- [ ] Run `npx supabase db reset --linked` so the demo data is clean
-- [ ] Deploy to Vercel with environment variables
-- [ ] Set `MIDTRANS_NOTIFICATION_URL` in Vercel to the deployed webhook URL and redeploy
+- [x] Run `npx supabase db reset --linked` so the demo data is clean
+- [x] Deploy to Vercel with environment variables
+- [x] Set `MIDTRANS_NOTIFICATION_URL` in Vercel to the deployed webhook URL and redeploy
 - [ ] Test the full flow in the sandbox: success, failure, duplicate, last seat
 
 ### Documentation and Submission

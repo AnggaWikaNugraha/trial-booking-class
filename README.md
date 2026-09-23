@@ -2,7 +2,7 @@
 
 A trial class booking system for Ottodot's live online classes. Parents choose a child and a trial class, submit a booking, pay through Midtrans (sandbox), and then see the booking status. Admins or teachers can see the roster of confirmed students for each class.
 
-**Demo:** [TODO Vercel link] · **Video walkthrough:** [TODO link] · **Bahasa Indonesia:** [README.id.md](README.id.md)
+**Demo:** [trial-booking-class.vercel.app](https://trial-booking-class.vercel.app) · **Video walkthrough:** [TODO link] · **Bahasa Indonesia:** [README.id.md](README.id.md)
 
 ## Summary
 

@@ -166,9 +166,9 @@ Admin atau guru ─► GET /api/classes/:id/roster ─► hanya booking confirme
 Seed ulang (db reset --linked) ─► Vercel (env) ─► URL notifikasi Midtrans ─► uji end to end
 ```
 
-- [ ] Jalankan `npx supabase db reset --linked` supaya data demo bersih
-- [ ] Deploy ke Vercel dengan environment variable
-- [ ] Isi `MIDTRANS_NOTIFICATION_URL` di Vercel dengan URL webhook yang sudah ter-deploy, lalu deploy ulang
+- [x] Jalankan `npx supabase db reset --linked` supaya data demo bersih
+- [x] Deploy ke Vercel dengan environment variable
+- [x] Isi `MIDTRANS_NOTIFICATION_URL` di Vercel dengan URL webhook yang sudah ter-deploy, lalu deploy ulang
 - [ ] Uji alur lengkap di sandbox: sukses, gagal, duplikat, kursi terakhir
 
 ### Dokumentasi dan Pengumpulan
