@@ -49,17 +49,21 @@ npm test                         # tests run against online Supabase
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key |
 | `MIDTRANS_SERVER_KEY` | Midtrans sandbox server key |
 | `NEXT_PUBLIC_MIDTRANS_CLIENT_KEY` | Midtrans sandbox client key |
+| `MIDTRANS_NOTIFICATION_URL` | Optional. Where Midtrans should send notifications for the transactions this app creates. Set it to `<public url>/api/payments/midtrans/notification`. Leave empty to use the URL set in the Midtrans dashboard |
 
 > [!WARNING]
 > Tests wipe the data. After `npm test`, click **Reset demo data** in the app, or run `npx supabase db reset --linked`, to restore the seed data.
 
 > [!NOTE]
-> The Midtrans webhook needs a public URL. To try payment end to end locally, use a tunnel such as ngrok. The automated tests do not need this, because they send signed notifications directly to the webhook.
+> The Midtrans webhook needs a public URL. To try payment end to end locally, run a tunnel (`ngrok http 3000`) and put its URL in `MIDTRANS_NOTIFICATION_URL`. Every Snap transaction then carries an `X-Override-Notification` header, so notifications reach this app without touching the dashboard setting, which may belong to another project. The automated tests do not need any of this, because they send signed notifications straight to the webhook.
 
 ### Deploy (Vercel + Supabase)
 
-1. Deploy to Vercel and set the same environment variables. The database is the same Supabase project as above.
-2. In the Midtrans sandbox dashboard, set the Payment Notification URL to `https://<app>.vercel.app/api/payments/midtrans/notification`
+1. Push the repo to GitHub and import it in Vercel, or run `npx vercel --prod`.
+2. Set the environment variables in Vercel. The database is the same Supabase project as above:
+   `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `MIDTRANS_SERVER_KEY`, `NEXT_PUBLIC_MIDTRANS_CLIENT_KEY`.
+3. Once the app has a URL, set `MIDTRANS_NOTIFICATION_URL` to `https://<app>.vercel.app/api/payments/midtrans/notification` and redeploy. Nothing needs to change in the Midtrans dashboard, because each transaction carries its own notification URL.
+4. Pay once in the sandbox and check the booking reaches `confirmed`. Midtrans records every delivery under Settings → Payment notification URL → View notification history.
 
 ### Seed Data
 
@@ -75,7 +79,14 @@ npm test                         # tests run against online Supabase
 
 ### Manual Demo Steps
 
-[TODO]
+Start from a clean state with the **Reset demo data** button.
+
+1. **Book and pay.** Budi Santoso → Bella → Science Trial A → *Book trial class* → *Pay now*. In the sandbox use card `4811 1111 1111 1114`, CVV `123`, any future expiry, OTP `112233`. The app moves to the booking status page, which polls until the Midtrans webhook lands and the status turns `confirmed`.
+2. **Duplicate booking.** Book Andi into Science Trial A. He is already confirmed there, so the API answers 409 and no second booking is stored.
+3. **Failed payment.** Bella's earlier booking for Science Trial A is `payment_failed`, and Science Trial A still shows 1 of 4 seats taken: a failed payment holds no seat and is not on the roster. Booking her into that class again is allowed.
+4. **Full class.** Science Trial C is 4 of 4, so it cannot be selected and the API refuses it.
+5. **Last-seat race.** Math Trial B has 3 of 4 seats taken. Book two different children into it; both sit in *Awaiting payment* holding no seat. Pay for both: the first payment is `confirmed`, the second becomes `rejected_class_full`, and `confirmed_count` stops at 4.
+6. **Roster.** Open *Rosters* in the header. Only confirmed students are listed.
 
 ---
 
@@ -83,7 +94,9 @@ npm test                         # tests run against online Supabase
 
 - **Booking flow:** choose a parent and child, pick a trial class, submit a booking, pay through Midtrans Snap, see the booking status
 - **Midtrans webhook:** verifies the signature, then confirms or fails the booking
-- **Roster:** a page and API per class that shows only confirmed students
+- **Booking status page:** polls while the payment is undecided, so it flips to `confirmed` on its own when the webhook lands
+- **Roster:** a page and API per class that shows only confirmed students, plus a class list at `/classes`
+- **Reset demo data:** a button that restores the seed, so the demo can be replayed
 - **Database guards:** prevent duplicate bookings and overbooking
 - **Atomic seat claim:** on successful payment, to handle the last-seat race
 - **Automated tests:** positive and negative scenarios, including the last-seat race
@@ -138,6 +151,7 @@ npm test                         # tests run against online Supabase
 - A child can have only one active booking (awaiting payment or confirmed) per class.
 - Refunds are not processed automatically. Bookings that need a refund are marked with a dedicated status so the team can follow up.
 - All database access happens on the server using the service role key.
+- The **Reset demo data** button is open to anyone who can reach the app. That is acceptable only because every row is synthetic demo data.
 
 ---
 
@@ -428,7 +442,8 @@ If both notifications arrive at the same time, Postgres locks the class row duri
 - Automatic refunds through the Midtrans API
 - Regular enrollment
 - Email notifications to parents
-- A polished UI
+- Accessibility and design polish beyond a plain, readable UI
+- Automated browser tests for the UI
 
 ---
 

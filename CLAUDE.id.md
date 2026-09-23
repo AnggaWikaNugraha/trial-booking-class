@@ -24,6 +24,8 @@ Stack:
 - `npm test` menjalankan semua tes terhadap Supabase online. Tes mengosongkan data, jadi jalankan `db reset --linked` (atau klik **Reset demo data** di aplikasi) setelahnya untuk mengembalikan seed. Beri tahu saya sebelum menjalankan tes, karena aplikasi yang mungkin sedang saya pakai jadi kosong
 - Data demo hanya didefinisikan di Postgres function `reset_demo_data()`. `seed.sql` hanya memanggilnya. Ubah data demo lewat migrasi baru yang mengganti function itu
 
+`MIDTRANS_NOTIFICATION_URL` mengarahkan Midtrans ke webhook aplikasi ini per transaksi (`X-Override-Notification`), jadi pengaturan dashboard tidak diubah. Isi dengan URL ngrok di lokal, dan URL Vercel di produksi.
+
 Tidak ada Supabase lokal atau Docker. Development, tes, dan demo Vercel memakai satu project Supabase online (Postgres).
 
 ## Aturan Wajib
@@ -166,7 +168,7 @@ Seed ulang (db reset --linked) ─► Vercel (env) ─► URL notifikasi Midtran
 
 - [ ] Jalankan `npx supabase db reset --linked` supaya data demo bersih
 - [ ] Deploy ke Vercel dengan environment variable
-- [ ] Atur Payment Notification URL di dashboard Midtrans sandbox
+- [ ] Isi `MIDTRANS_NOTIFICATION_URL` di Vercel dengan URL webhook yang sudah ter-deploy, lalu deploy ulang
 - [ ] Uji alur lengkap di sandbox: sukses, gagal, duplikat, kursi terakhir
 
 ### Dokumentasi dan Pengumpulan

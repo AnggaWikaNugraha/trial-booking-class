@@ -49,17 +49,21 @@ npm test                         # tes berjalan terhadap Supabase online
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key Supabase |
 | `MIDTRANS_SERVER_KEY` | Server key Midtrans sandbox |
 | `NEXT_PUBLIC_MIDTRANS_CLIENT_KEY` | Client key Midtrans sandbox |
+| `MIDTRANS_NOTIFICATION_URL` | Opsional. Tujuan notifikasi Midtrans untuk transaksi yang dibuat aplikasi ini. Isi dengan `<url publik>/api/payments/midtrans/notification`. Kosongkan untuk memakai URL di dashboard Midtrans |
 
 > [!WARNING]
 > Tes mengosongkan data. Setelah `npm test`, klik **Reset demo data** di aplikasi, atau jalankan `npx supabase db reset --linked`, untuk mengembalikan seed data.
 
 > [!NOTE]
-> Webhook Midtrans butuh URL publik. Untuk mencoba pembayaran end to end di lokal, pakai tunnel seperti ngrok. Tes otomatis tidak butuh ini karena tes mengirim notifikasi bertanda tangan langsung ke webhook.
+> Webhook Midtrans butuh URL publik. Untuk mencoba pembayaran end to end di lokal, jalankan tunnel (`ngrok http 3000`) lalu isi URL-nya di `MIDTRANS_NOTIFICATION_URL`. Setiap transaksi Snap akan membawa header `X-Override-Notification`, jadi notifikasi sampai ke aplikasi ini tanpa mengubah pengaturan dashboard, yang mungkin dipakai project lain. Tes otomatis tidak butuh semua ini karena mengirim notifikasi bertanda tangan langsung ke webhook.
 
 ### Deploy (Vercel + Supabase)
 
-1. Deploy ke Vercel dan isi environment variable yang sama. Database-nya project Supabase yang sama dengan di atas.
-2. Di dashboard Midtrans sandbox, atur Payment Notification URL ke `https://<app>.vercel.app/api/payments/midtrans/notification`
+1. Push repo ke GitHub lalu import di Vercel, atau jalankan `npx vercel --prod`.
+2. Isi environment variable di Vercel. Database-nya project Supabase yang sama dengan di atas:
+   `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `MIDTRANS_SERVER_KEY`, `NEXT_PUBLIC_MIDTRANS_CLIENT_KEY`.
+3. Setelah aplikasi punya URL, isi `MIDTRANS_NOTIFICATION_URL` dengan `https://<app>.vercel.app/api/payments/midtrans/notification`, lalu deploy ulang. Dashboard Midtrans tidak perlu diubah, karena setiap transaksi membawa URL notifikasinya sendiri.
+4. Bayar sekali di sandbox dan pastikan booking sampai ke `confirmed`. Riwayat pengiriman notifikasi bisa dilihat di Settings → Payment notification URL → View notification history.
 
 ### Seed Data
 
@@ -75,7 +79,14 @@ npm test                         # tes berjalan terhadap Supabase online
 
 ### Langkah Demo Manual
 
-[TODO]
+Mulai dari kondisi bersih dengan tombol **Reset demo data**.
+
+1. **Booking dan bayar.** Budi Santoso → Bella → Science Trial A → *Book trial class* → *Pay now*. Di sandbox pakai kartu `4811 1111 1111 1114`, CVV `123`, expiry bulan/tahun apa pun di masa depan, OTP `112233`. Aplikasi pindah ke halaman status booking, yang melakukan polling sampai webhook Midtrans masuk dan statusnya jadi `confirmed`.
+2. **Booking ganda.** Booking Andi ke Science Trial A. Dia sudah terkonfirmasi di sana, jadi API membalas 409 dan tidak ada booking kedua yang tersimpan.
+3. **Pembayaran gagal.** Booking Bella sebelumnya di Science Trial A berstatus `payment_failed`, dan Science Trial A tetap terisi 1 dari 4: pembayaran gagal tidak mengambil kursi dan tidak masuk roster. Booking ulang anak itu di kelas yang sama tetap diperbolehkan.
+4. **Kelas penuh.** Science Trial C terisi 4 dari 4, jadi tidak bisa dipilih dan ditolak oleh API.
+5. **Rebutan kursi terakhir.** Math Trial B terisi 3 dari 4. Booking dua anak berbeda ke kelas itu, keduanya masuk daftar *Awaiting payment* tanpa memegang kursi. Bayar keduanya: pembayaran pertama jadi `confirmed`, yang kedua jadi `rejected_class_full`, dan `confirmed_count` berhenti di 4.
+6. **Roster.** Buka *Rosters* di header. Hanya murid terkonfirmasi yang tampil.
 
 ---
 
@@ -83,7 +94,9 @@ npm test                         # tes berjalan terhadap Supabase online
 
 - **Alur booking:** pilih orang tua dan anak, pilih kelas trial, kirim booking, bayar lewat Midtrans Snap, lihat status booking
 - **Webhook Midtrans:** memverifikasi signature, lalu mengonfirmasi atau menggagalkan booking
-- **Roster:** halaman dan API per kelas yang hanya menampilkan murid terkonfirmasi
+- **Halaman status booking:** melakukan polling selama pembayaran belum diputuskan, jadi berubah sendiri jadi `confirmed` begitu webhook masuk
+- **Roster:** halaman dan API per kelas yang hanya menampilkan murid terkonfirmasi, plus daftar kelas di `/classes`
+- **Reset demo data:** tombol yang mengembalikan seed, supaya demo bisa diulang
 - **Penjaga di database:** mencegah booking ganda dan overbooking
 - **Pengambilan kursi atomik:** saat pembayaran sukses, untuk menangani rebutan kursi terakhir
 - **Tes otomatis:** skenario positif dan negatif, termasuk rebutan kursi terakhir
@@ -138,6 +151,7 @@ npm test                         # tes berjalan terhadap Supabase online
 - Satu anak hanya boleh punya satu booking aktif (menunggu pembayaran atau terkonfirmasi) per kelas.
 - Refund tidak diproses otomatis. Booking yang perlu refund ditandai dengan status khusus agar tim bisa menindaklanjuti.
 - Semua akses database dilakukan dari server memakai service role key.
+- Tombol **Reset demo data** terbuka untuk siapa pun yang bisa membuka aplikasi. Ini bisa diterima hanya karena semua datanya data demo sintetis.
 
 ---
 
@@ -428,7 +442,8 @@ Jika kedua notifikasi masuk bersamaan, Postgres mengunci baris kelas selama upda
 - Refund otomatis lewat API Midtrans
 - Pendaftaran reguler
 - Notifikasi email ke orang tua
-- Tampilan UI yang rapi
+- Aksesibilitas dan poles tampilan di luar UI sederhana yang mudah dibaca
+- Tes otomatis di browser untuk UI
 
 ---
 

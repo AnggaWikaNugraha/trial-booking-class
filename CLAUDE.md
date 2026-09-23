@@ -26,6 +26,8 @@ Stack:
 - `npm test` runs all tests against online Supabase. Tests wipe the data, so run `db reset --linked` (or click **Reset demo data** in the app) afterwards to restore the seed. Tell the user before running tests, since the app they may be using goes empty
 - Demo data is defined once, in the Postgres function `reset_demo_data()`. `seed.sql` only calls it. Change demo data with a new migration that replaces the function
 
+`MIDTRANS_NOTIFICATION_URL` points Midtrans at this app's webhook per transaction (`X-Override-Notification`), so the dashboard setting is left alone. Set it to the ngrok URL locally and the Vercel URL in production.
+
 There is no local Supabase or Docker. Development, tests, and the Vercel demo all use one online Supabase project (Postgres).
 
 ## Hard Rules
@@ -168,7 +170,7 @@ Reseed (db reset --linked) ─► Vercel (env) ─► Midtrans notification URL 
 
 - [ ] Run `npx supabase db reset --linked` so the demo data is clean
 - [ ] Deploy to Vercel with environment variables
-- [ ] Set the Payment Notification URL in the Midtrans sandbox dashboard
+- [ ] Set `MIDTRANS_NOTIFICATION_URL` in Vercel to the deployed webhook URL and redeploy
 - [ ] Test the full flow in the sandbox: success, failure, duplicate, last seat
 
 ### Documentation and Submission
