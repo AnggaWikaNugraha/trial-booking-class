@@ -176,17 +176,20 @@ flowchart LR
 
 ```
 app/
+  layout.tsx                            kerangka: header, footer, token warna
   page.tsx                              halaman booking
   bookings/[id]/page.tsx                halaman status booking
+  classes/page.tsx                      daftar kelas dengan tautan ke roster
   classes/[id]/roster/page.tsx          halaman roster
   _components/                          bukan route (awalan _ mengecualikannya)
-    primitive/                          komponen form yang bisa dipakai ulang
-      select.tsx
-      input.tsx
-      button.tsx                        varian primary dan secondary
-      form-field-group.tsx              label pembungkus field
+    primitive/                          komponen yang bisa dipakai ulang
+      card.tsx, badge.tsx, button.tsx
+      select.tsx, input.tsx, form-field-group.tsx
+      seat-meter.tsx                    4 titik: aturan kapasitas, terlihat di layar
+      skeleton.tsx
+    layout/site-header.tsx
     booking-form/
-      booking-form.tsx                  client component yang merangkai section
+      booking-form.tsx                  client component yang merangkai langkah
       class-list.tsx
       hooks/                            state dan pengambilan data untuk form
         use-booking-selection.ts
@@ -194,6 +197,11 @@ app/
         use-classes.ts
         use-create-booking.ts
         use-pay-booking.ts
+    booking-status/
+      booking-status.tsx                polling sampai statusnya final
+      booking-timeline.tsx
+      status-copy.ts                    satu label dan penjelasan per status
+      hooks/use-booking-status.ts
     pending-bookings/
       pending-bookings.tsx              server component: siapa yang menunggu pembayaran
     reset-demo/                         tombol client dan hook untuk reset demo
@@ -209,26 +217,19 @@ app/
 lib/
   supabase.ts                           Supabase server client
   data/                                 satu fungsi query per file, dipakai halaman dan route handler
-    list-parents.ts
-    parent-exists.ts
-    list-students.ts
-    list-classes.ts
-    get-class.ts
-    student-belongs-to-parent.ts
-    create-booking.ts
-    list-pending-bookings.ts
-    get-booking-for-payment.ts
-    create-payment-attempt.ts
-    confirm-payment.ts
-    reset-demo-data.ts
+    list-parents.ts, parent-exists.ts, list-students.ts
+    list-classes.ts, get-class.ts, get-class-roster.ts
+    student-belongs-to-parent.ts, create-booking.ts, get-booking.ts
+    list-pending-bookings.ts, get-booking-for-payment.ts
+    create-payment-attempt.ts, confirm-payment.ts, reset-demo-data.ts
   http.ts                               cek uuid dan helper error JSON
-  midtrans.ts                           pembuatan transaksi Snap dan verifikasi signature
+  midtrans.ts                           transaksi Snap, verifikasi signature, pemetaan status
   trial-price.ts                        harga trial (IDR 150.000)
 supabase/
   migrations/                           skema, index, function confirm_payment dan reset_demo_data
   seed.sql                              select reset_demo_data();
 tests/
-  helpers/                              db reset, fixtures, signed Midtrans notifications
+  helpers/                              reset data, fixture, notifikasi Midtrans bertanda tangan
   *.test.ts                             memanggil route handler langsung, tanpa server
 ```
 

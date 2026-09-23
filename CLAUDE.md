@@ -41,7 +41,8 @@ There is no local Supabase or Docker. Development, tests, and the Vercel demo al
 
 ## UI Conventions
 
-- Reusable form building blocks live in `app/_components/primitive/` (`Select`, `Input`, `Button`, `FormFieldGroup`). Use them instead of raw `<select>`, `<input>`, or `<button>`. `Button` has `primary` and `secondary` variants.
+- Reusable building blocks live in `app/_components/primitive/` (`Card`, `Badge`, `Button`, `Select`, `Input`, `FormFieldGroup`, `SeatMeter`, `Skeleton`). Use them instead of raw `<select>`, `<input>`, or `<button>`. `Button` has `primary` and `secondary` variants.
+- Colors come from the tokens in `app/globals.css` (`bg-surface`, `text-muted`, `border-border`, `bg-danger-surface`, ...). Never hardcode a Tailwind palette color such as `bg-neutral-100`, or dark mode breaks.
 - Each feature gets a folder in `app/_components/<feature>/`. State and data fetching go in custom hooks under its `hooks/` folder; components only take props.
 - Do not wrap a single field in its own component. Compose `FormFieldGroup` + a primitive directly in the feature component.
 - Destructure hook results, and alias clashing names (`loading: studentsLoading`).
@@ -145,9 +146,9 @@ Status page ─► GET /api/bookings/:id ─► show status
             ─► repeat (polling) while still pending_payment
 ```
 
-- [ ] `GET /api/bookings/:id`
-- [ ] Booking status page UI with polling
-- [ ] Test P4
+- [x] `GET /api/bookings/:id`
+- [x] Booking status page UI with polling
+- [x] Test P4
 
 ### Flow 6: Roster
 
@@ -155,9 +156,9 @@ Status page ─► GET /api/bookings/:id ─► show status
 Admin or teacher ─► GET /api/classes/:id/roster ─► confirmed bookings only
 ```
 
-- [ ] `GET /api/classes/:id/roster`
-- [ ] Roster page UI per class
-- [ ] Test P5
+- [x] `GET /api/classes/:id/roster`
+- [x] Roster page UI per class
+- [x] Test P5
 
 ### Deploy
 

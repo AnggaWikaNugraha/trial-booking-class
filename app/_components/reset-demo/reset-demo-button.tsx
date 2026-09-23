@@ -11,7 +11,7 @@ export function ResetDemoButton() {
       <Button variant="secondary" onClick={resetDemo} disabled={resetting}>
         {resetting ? "Resetting..." : "Reset demo data"}
       </Button>
-      {error && <p className="mt-1 text-sm text-red-700">{error}</p>}
+      {error && <p className="mt-1 text-sm text-danger">{error}</p>}
     </div>
   );
 }

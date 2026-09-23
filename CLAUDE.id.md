@@ -39,7 +39,8 @@ Tidak ada Supabase lokal atau Docker. Development, tes, dan demo Vercel memakai 
 
 ## Konvensi UI
 
-- Komponen form yang bisa dipakai ulang ada di `app/_components/primitive/` (`Select`, `Input`, `Button`, `FormFieldGroup`). Pakai ini, bukan `<select>`, `<input>`, atau `<button>` mentah. `Button` punya varian `primary` dan `secondary`.
+- Komponen yang bisa dipakai ulang ada di `app/_components/primitive/` (`Card`, `Badge`, `Button`, `Select`, `Input`, `FormFieldGroup`, `SeatMeter`, `Skeleton`). Pakai ini, bukan `<select>`, `<input>`, atau `<button>` mentah. `Button` punya varian `primary` dan `secondary`.
+- Warna diambil dari token di `app/globals.css` (`bg-surface`, `text-muted`, `border-border`, `bg-danger-surface`, ...). Jangan menulis warna palet Tailwind langsung seperti `bg-neutral-100`, karena dark mode jadi rusak.
 - Setiap fitur punya folder di `app/_components/<fitur>/`. State dan pengambilan data masuk ke custom hook di folder `hooks/`; komponen hanya menerima props.
 - Jangan membungkus satu field dalam komponen sendiri. Rangkai `FormFieldGroup` + primitive langsung di komponen fitur.
 - Destructure hasil hook, dan beri alias untuk nama yang bentrok (`loading: studentsLoading`).
@@ -143,9 +144,9 @@ Halaman status ─► GET /api/bookings/:id ─► tampilkan status
                ─► ulangi (polling) selama masih pending_payment
 ```
 
-- [ ] `GET /api/bookings/:id`
-- [ ] UI halaman status booking dengan polling
-- [ ] Tes P4
+- [x] `GET /api/bookings/:id`
+- [x] UI halaman status booking dengan polling
+- [x] Tes P4
 
 ### Flow 6: Roster
 
@@ -153,9 +154,9 @@ Halaman status ─► GET /api/bookings/:id ─► tampilkan status
 Admin atau guru ─► GET /api/classes/:id/roster ─► hanya booking confirmed
 ```
 
-- [ ] `GET /api/classes/:id/roster`
-- [ ] UI halaman roster per kelas
-- [ ] Tes P5
+- [x] `GET /api/classes/:id/roster`
+- [x] UI halaman roster per kelas
+- [x] Tes P5
 
 ### Deploy
 

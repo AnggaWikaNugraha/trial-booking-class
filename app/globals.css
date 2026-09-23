@@ -1,26 +1,72 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f8fa;
+  --foreground: #10131a;
+  --surface: #ffffff;
+  --surface-muted: #f1f3f7;
+  --border: #dfe3ea;
+  --muted: #5c6474;
+  --primary: #1f5fd6;
+  --primary-foreground: #ffffff;
+  --success: #0f7a52;
+  --success-surface: #e7f6ee;
+  --danger: #b4231f;
+  --danger-surface: #fdeceb;
+  --warning: #8a5a05;
+  --warning-surface: #fdf2dc;
+  --info: #1f5fd6;
+  --info-surface: #e8f0fd;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b0e14;
+    --foreground: #e8eaf0;
+    --surface: #141922;
+    --surface-muted: #1b212c;
+    --border: #2a323f;
+    --muted: #9aa3b4;
+    --primary: #6098f5;
+    --primary-foreground: #0b0e14;
+    --success: #5fd4a3;
+    --success-surface: #10291f;
+    --danger: #f58b86;
+    --danger-surface: #2c1614;
+    --warning: #e8b765;
+    --warning-surface: #2a2113;
+    --info: #6098f5;
+    --info-surface: #131f33;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-success: var(--success);
+  --color-success-surface: var(--success-surface);
+  --color-danger: var(--danger);
+  --color-danger-surface: var(--danger-surface);
+  --color-warning: var(--warning);
+  --color-warning-surface: var(--warning-surface);
+  --color-info: var(--info);
+  --color-info-surface: var(--info-surface);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+code {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.9em;
 }

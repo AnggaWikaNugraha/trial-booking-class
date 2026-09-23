@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type SnapCallbacks = {
   onSuccess?: () => void;
@@ -18,11 +18,24 @@ declare global {
 // changes when the verified Midtrans webhook arrives.
 type Outcome = "submitted" | "failed" | "closed";
 
+// After a payment is sent, the webhook decides the outcome. The booking status
+// page polls for it, so send the parent there.
+const REDIRECT_DELAY_MS = 3000;
+
 export function usePayBooking({ onFinished }: { onFinished?: () => void } = {}) {
   const router = useRouter();
+  const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [paying, setPaying] = useState(false);
   const [outcome, setOutcome] = useState<Outcome | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Leaving the page before the redirect fires should cancel it.
+  useEffect(
+    () => () => {
+      if (redirectTimer.current) clearTimeout(redirectTimer.current);
+    },
+    [],
+  );
 
   async function payBooking(bookingId: string) {
     setPaying(true);
@@ -35,8 +48,8 @@ export function usePayBooking({ onFinished }: { onFinished?: () => void } = {}) 
       if (!window.snap) throw new Error("The payment page is still loading, please try again");
 
       window.snap.pay(body.token, {
-        onSuccess: () => finish("submitted"),
-        onPending: () => finish("submitted"),
+        onSuccess: () => finish("submitted", bookingId),
+        onPending: () => finish("submitted", bookingId),
         onError: () => finish("failed"),
         onClose: () => finish("closed"),
       });
@@ -46,9 +59,14 @@ export function usePayBooking({ onFinished }: { onFinished?: () => void } = {}) 
     }
   }
 
-  function finish(result: Outcome) {
+  function finish(result: Outcome, bookingId?: string) {
     setOutcome(result);
     setPaying(false);
+    if (result === "submitted" && bookingId) {
+      redirectTimer.current = setTimeout(() => {
+        router.push(`/bookings/${bookingId}`);
+      }, REDIRECT_DELAY_MS);
+    }
     // Midtrans confirms through the webhook, which can land a moment later,
     // so the seat count may still be one refresh behind.
     router.refresh();

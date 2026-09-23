@@ -11,7 +11,7 @@ type Props = Omit<ComponentProps<"select">, "onChange" | "children"> & {
 export function Select({ options, placeholder, onChange, className = "", ...props }: Props) {
   return (
     <select
-      className={`block w-full rounded border border-neutral-300 bg-transparent p-2 disabled:opacity-50 ${className}`}
+      className={`block w-full rounded-lg border border-border bg-surface p-2.5 text-sm disabled:opacity-50 ${className}`}
       onChange={(e) => onChange(e.target.value)}
       {...props}
     >

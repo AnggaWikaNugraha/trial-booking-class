@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SiteHeader } from "./_components/layout/site-header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,7 +24,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <SiteHeader />
+        <div className="flex-1">{children}</div>
+        <footer className="border-t border-border py-6 text-center text-xs text-muted">
+          Demo with synthetic data. Payments run in the Midtrans sandbox, no real money.
+        </footer>
+      </body>
     </html>
   );
 }

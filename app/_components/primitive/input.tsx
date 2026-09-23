@@ -6,7 +6,7 @@ const TOGGLE_TYPES = new Set(["checkbox", "radio"]);
 
 export function Input({ type = "text", className = "", ...props }: ComponentProps<"input">) {
   const base = TOGGLE_TYPES.has(type)
-    ? "accent-blue-600 disabled:opacity-50"
-    : "block w-full rounded border border-neutral-300 bg-transparent p-2 disabled:opacity-50";
+    ? "accent-primary disabled:opacity-50"
+    : "block w-full rounded-lg border border-border bg-surface p-2.5 text-sm disabled:opacity-50";
   return <input type={type} className={`${base} ${className}`} {...props} />;
 }

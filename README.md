@@ -176,17 +176,20 @@ flowchart LR
 
 ```
 app/
+  layout.tsx                            shell: header, footer, theme tokens
   page.tsx                              booking page
   bookings/[id]/page.tsx                booking status page
+  classes/page.tsx                      class list with links to rosters
   classes/[id]/roster/page.tsx          roster page
   _components/                          not a route (the _ prefix opts it out)
-    primitive/                          reusable form building blocks
-      select.tsx
-      input.tsx
-      button.tsx                        primary and secondary variants
-      form-field-group.tsx              label wrapper for a field
+    primitive/                          reusable building blocks
+      card.tsx, badge.tsx, button.tsx
+      select.tsx, input.tsx, form-field-group.tsx
+      seat-meter.tsx                    4 dots: the capacity rule, on screen
+      skeleton.tsx
+    layout/site-header.tsx
     booking-form/
-      booking-form.tsx                  client component composing the sections
+      booking-form.tsx                  client component composing the steps
       class-list.tsx
       hooks/                            state and data fetching for the form
         use-booking-selection.ts
@@ -194,6 +197,11 @@ app/
         use-classes.ts
         use-create-booking.ts
         use-pay-booking.ts
+    booking-status/
+      booking-status.tsx                polls until the status is final
+      booking-timeline.tsx
+      status-copy.ts                    one label and explanation per status
+      hooks/use-booking-status.ts
     pending-bookings/
       pending-bookings.tsx              server component: who is awaiting payment
     reset-demo/                         client button and hook for the demo reset
@@ -209,20 +217,13 @@ app/
 lib/
   supabase.ts                           Supabase server client
   data/                                 one query function per file, shared by pages and route handlers
-    list-parents.ts
-    parent-exists.ts
-    list-students.ts
-    list-classes.ts
-    get-class.ts
-    student-belongs-to-parent.ts
-    create-booking.ts
-    list-pending-bookings.ts
-    get-booking-for-payment.ts
-    create-payment-attempt.ts
-    confirm-payment.ts
-    reset-demo-data.ts
+    list-parents.ts, parent-exists.ts, list-students.ts
+    list-classes.ts, get-class.ts, get-class-roster.ts
+    student-belongs-to-parent.ts, create-booking.ts, get-booking.ts
+    list-pending-bookings.ts, get-booking-for-payment.ts
+    create-payment-attempt.ts, confirm-payment.ts, reset-demo-data.ts
   http.ts                               uuid check and JSON error helper
-  midtrans.ts                           Snap transaction creation and signature verification
+  midtrans.ts                           Snap transactions, signature check, status mapping
   trial-price.ts                        trial price (IDR 150,000)
 supabase/
   migrations/                           schema, indexes, confirm_payment and reset_demo_data functions
