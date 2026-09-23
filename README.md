@@ -134,7 +134,7 @@ npm test                         # tests run against online Supabase
 - Payment uses Midtrans in sandbox mode. No real money is involved.
 - There is no authentication. The parent is chosen from a dropdown for demo purposes.
 - Every trial class has a fixed capacity of 4 students.
-- One currency (IDR) and one trial price.
+- One currency (IDR) and one trial price, IDR 150,000.
 - A child can have only one active booking (awaiting payment or confirmed) per class.
 - Refunds are not processed automatically. Bookings that need a refund are marked with a dedicated status so the team can follow up.
 - All database access happens on the server using the service role key.
@@ -193,6 +193,7 @@ app/
         use-students.ts
         use-classes.ts
         use-create-booking.ts
+        use-pay-booking.ts
     pending-bookings/
       pending-bookings.tsx              server component: who is awaiting payment
     reset-demo/                         client button and hook for the demo reset
@@ -216,9 +217,12 @@ lib/
     student-belongs-to-parent.ts
     create-booking.ts
     list-pending-bookings.ts
+    get-booking-for-payment.ts
+    create-payment-attempt.ts
     reset-demo-data.ts
   http.ts                               uuid check and JSON error helper
   midtrans.ts                           Snap transaction creation and signature verification
+  trial-price.ts                        trial price (IDR 150,000)
 supabase/
   migrations/                           schema, indexes, confirm_payment and reset_demo_data functions
   seed.sql                              select reset_demo_data();
@@ -316,7 +320,7 @@ All endpoints accept and return JSON.
 | `GET` | `/api/parents/:id/students` | List a parent's children |
 | `GET` | `/api/classes` | List trial classes with remaining seats |
 | `POST` | `/api/bookings` | Create a `pending_payment` booking. 400 bad body, 403 child not the parent's, 404 unknown class, 409 duplicate or class already full |
-| `POST` | `/api/bookings/:id/pay` | Create a Midtrans Snap transaction, return the token or redirect URL |
+| `POST` | `/api/bookings/:id/pay` | Record a payment attempt with a new `order_id`, then create a Midtrans Snap transaction and return its token and redirect URL. 409 if the booking is no longer `pending_payment`, 502 if Midtrans fails |
 | `POST` | `/api/payments/midtrans/notification` | Midtrans webhook. Verifies the signature, then calls `confirm_payment` |
 | `GET` | `/api/bookings/:id` | Get the booking status |
 | `GET` | `/api/classes/:id/roster` | List confirmed students |

@@ -110,9 +110,9 @@ Tombol bayar ─► POST /api/bookings/:id/pay
              ─► orang tua bayar di Midtrans Snap
 ```
 
-- [ ] `lib/midtrans.ts`: buat transaksi Snap
-- [ ] `POST /api/bookings/:id/pay`
-- [ ] UI tombol bayar dengan Midtrans Snap
+- [x] `lib/midtrans.ts`: buat transaksi Snap
+- [x] `POST /api/bookings/:id/pay`
+- [x] UI tombol bayar dengan Midtrans Snap
 
 ### Flow 4: Webhook dan Konfirmasi Kursi
 

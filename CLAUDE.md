@@ -112,9 +112,9 @@ Pay button ─► POST /api/bookings/:id/pay
            ─► parent pays in Midtrans Snap
 ```
 
-- [ ] `lib/midtrans.ts`: create Snap transaction
-- [ ] `POST /api/bookings/:id/pay`
-- [ ] UI pay button with Midtrans Snap
+- [x] `lib/midtrans.ts`: create Snap transaction
+- [x] `POST /api/bookings/:id/pay`
+- [x] UI pay button with Midtrans Snap
 
 ### Flow 4: Webhook and Seat Confirmation
 

@@ -134,7 +134,7 @@ npm test                         # tes berjalan terhadap Supabase online
 - Pembayaran memakai Midtrans mode sandbox, tidak ada uang sungguhan.
 - Tidak ada autentikasi. Orang tua dipilih dari dropdown untuk keperluan demo.
 - Kapasitas setiap kelas trial tetap, yaitu 4 murid.
-- Satu mata uang (IDR) dan satu harga trial.
+- Satu mata uang (IDR) dan satu harga trial, IDR 150.000.
 - Satu anak hanya boleh punya satu booking aktif (menunggu pembayaran atau terkonfirmasi) per kelas.
 - Refund tidak diproses otomatis. Booking yang perlu refund ditandai dengan status khusus agar tim bisa menindaklanjuti.
 - Semua akses database dilakukan dari server memakai service role key.
@@ -193,6 +193,7 @@ app/
         use-students.ts
         use-classes.ts
         use-create-booking.ts
+        use-pay-booking.ts
     pending-bookings/
       pending-bookings.tsx              server component: siapa yang menunggu pembayaran
     reset-demo/                         tombol client dan hook untuk reset demo
@@ -216,9 +217,12 @@ lib/
     student-belongs-to-parent.ts
     create-booking.ts
     list-pending-bookings.ts
+    get-booking-for-payment.ts
+    create-payment-attempt.ts
     reset-demo-data.ts
   http.ts                               cek uuid dan helper error JSON
   midtrans.ts                           pembuatan transaksi Snap dan verifikasi signature
+  trial-price.ts                        harga trial (IDR 150.000)
 supabase/
   migrations/                           skema, index, function confirm_payment dan reset_demo_data
   seed.sql                              select reset_demo_data();
@@ -316,7 +320,7 @@ Semua endpoint menerima dan mengembalikan JSON.
 | `GET` | `/api/parents/:id/students` | Daftar anak milik orang tua |
 | `GET` | `/api/classes` | Daftar kelas trial beserta sisa kursi |
 | `POST` | `/api/bookings` | Membuat booking `pending_payment`. 400 body tidak valid, 403 anak bukan milik orang tua, 404 kelas tidak ada, 409 duplikat atau kelas sudah penuh |
-| `POST` | `/api/bookings/:id/pay` | Membuat transaksi Midtrans Snap, mengembalikan token atau redirect URL |
+| `POST` | `/api/bookings/:id/pay` | Mencatat percobaan bayar dengan `order_id` baru, lalu membuat transaksi Midtrans Snap dan mengembalikan token serta redirect URL. 409 jika booking sudah bukan `pending_payment`, 502 jika Midtrans gagal |
 | `POST` | `/api/payments/midtrans/notification` | Webhook Midtrans. Verifikasi signature, lalu memanggil `confirm_payment` |
 | `GET` | `/api/bookings/:id` | Melihat status booking |
 | `GET` | `/api/classes/:id/roster` | Daftar murid terkonfirmasi |
