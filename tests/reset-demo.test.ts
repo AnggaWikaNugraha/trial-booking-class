@@ -26,8 +26,10 @@ describe("reset demo data", () => {
       { subject: "Science Trial C", confirmed_count: 4 },
     ]);
     const { data: bookings } = await db.from("bookings").select("status");
-    expect(bookings).toHaveLength(8);
-    expect(bookings?.every((b) => b.status === "confirmed")).toBe(true);
+    expect(bookings).toHaveLength(9);
+    expect(bookings?.filter((b) => b.status === "confirmed")).toHaveLength(8);
+    // The payment failure case the brief asks for.
+    expect(bookings?.filter((b) => b.status === "payment_failed")).toHaveLength(1);
     const { count: students } = await db.from("students").select("*", { count: "exact", head: true });
     expect(students).toBe(6);
   });

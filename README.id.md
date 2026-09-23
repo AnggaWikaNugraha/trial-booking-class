@@ -65,12 +65,12 @@ npm test                         # tes berjalan terhadap Supabase online
 
 | Kelas | Terkonfirmasi | Kasus yang ditunjukkan |
 |---|---|---|
-| Science Trial A | 1 dari 4 | Kelas dengan kursi tersedia, dan demo booking ganda |
+| Science Trial A | 1 dari 4 | Kelas dengan kursi tersedia, demo booking ganda, dan pembayaran gagal |
 | Math Trial B | 3 dari 4 | Rebutan kursi terakhir |
 | Science Trial C | 4 dari 4 | Kelas penuh |
 
 - **Booking ganda:** satu anak sudah `confirmed` di Science Trial A. Coba booking anak yang sama di kelas itu.
-- **Pembayaran gagal:** pakai kartu uji yang ditolak, atau biarkan transaksi kedaluwarsa di sandbox Midtrans.
+- **Pembayaran gagal:** booking Bella di Science Trial A sudah berstatus `payment_failed`, dari pembayaran yang ditolak. Dia tidak memegang kursi dan boleh booking ulang di kelas itu. Untuk melihatnya terjadi langsung, bayar dengan kartu uji yang ditolak, atau biarkan transaksi kedaluwarsa di sandbox Midtrans.
 - **Mulai ulang:** tombol **Reset demo data** mengembalikan kondisi ini. Datanya hanya didefinisikan di satu tempat, yaitu Postgres function `reset_demo_data()`, yang dipanggil oleh `seed.sql` maupun tombol itu.
 
 ### Langkah Demo Manual
@@ -219,6 +219,7 @@ lib/
     list-pending-bookings.ts
     get-booking-for-payment.ts
     create-payment-attempt.ts
+    confirm-payment.ts
     reset-demo-data.ts
   http.ts                               cek uuid dan helper error JSON
   midtrans.ts                           pembuatan transaksi Snap dan verifikasi signature
@@ -227,7 +228,7 @@ supabase/
   migrations/                           skema, index, function confirm_payment dan reset_demo_data
   seed.sql                              select reset_demo_data();
 tests/
-  helpers/db.ts                         reset data dan fixture
+  helpers/                              db reset, fixtures, signed Midtrans notifications
   *.test.ts                             memanggil route handler langsung, tanpa server
 ```
 
@@ -321,7 +322,7 @@ Semua endpoint menerima dan mengembalikan JSON.
 | `GET` | `/api/classes` | Daftar kelas trial beserta sisa kursi |
 | `POST` | `/api/bookings` | Membuat booking `pending_payment`. 400 body tidak valid, 403 anak bukan milik orang tua, 404 kelas tidak ada, 409 duplikat atau kelas sudah penuh |
 | `POST` | `/api/bookings/:id/pay` | Mencatat percobaan bayar dengan `order_id` baru, lalu membuat transaksi Midtrans Snap dan mengembalikan token serta redirect URL. 409 jika booking sudah bukan `pending_payment`, 502 jika Midtrans gagal |
-| `POST` | `/api/payments/midtrans/notification` | Webhook Midtrans. Verifikasi signature, lalu memanggil `confirm_payment` |
+| `POST` | `/api/payments/midtrans/notification` | Webhook Midtrans. Verifikasi signature, lalu memanggil `confirm_payment`. 401 jika signature salah, 200 untuk status yang belum final atau `order_id` yang tidak dikenal, supaya Midtrans berhenti mengirim ulang |
 | `GET` | `/api/bookings/:id` | Melihat status booking |
 | `GET` | `/api/classes/:id/roster` | Daftar murid terkonfirmasi |
 | `POST` | `/api/demo/reset` | Khusus demo. Menghapus semua booking dan mengembalikan seed lewat `reset_demo_data()` |
@@ -341,9 +342,10 @@ Booking yang gagal bayar tidak termasuk index, sehingga orang tua bisa booking u
 
    | Status Midtrans | Arti |
    |---|---|
-   | `settlement`, `capture` | Sukses |
+   | `settlement` | Sukses |
+   | `capture` | Sukses hanya jika `fraud_status` bernilai `accept`; `challenge` menunggu peninjauan |
    | `deny`, `cancel`, `expire`, `failure` | Gagal |
-   | `pending` | Diabaikan |
+   | `pending` dan status lain | Diabaikan |
 
 5. Server memanggil Postgres function `confirm_payment` lewat `supabase.rpc()`.
 

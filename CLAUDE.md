@@ -130,13 +130,13 @@ Midtrans ─► POST /api/payments/midtrans/notification
                                                └─► no seats left ─► rejected_class_full
 ```
 
-- [ ] `confirm_payment` function (new migration)
-- [ ] `lib/midtrans.ts`: signature verification
-- [ ] Map Midtrans statuses to success, failure, or ignore
-- [ ] `POST /api/payments/midtrans/notification`
-- [ ] Test helper for building signed Midtrans notifications
-- [ ] Tests P3, N3, N4, N5, N6, N7
-- [ ] Last-seat race tests N8 and N9
+- [x] `confirm_payment` function (new migration)
+- [x] `lib/midtrans.ts`: signature verification
+- [x] Map Midtrans statuses to success, failure, or ignore
+- [x] `POST /api/payments/midtrans/notification`
+- [x] Test helper for building signed Midtrans notifications
+- [x] Tests P3, N3, N4, N5, N6, N7
+- [x] Last-seat race tests N8 and N9
 
 ### Flow 5: Booking Status
 

@@ -65,12 +65,12 @@ npm test                         # tests run against online Supabase
 
 | Class | Confirmed | Case shown |
 |---|---|---|
-| Science Trial A | 1 of 4 | Class with available seats, and the duplicate booking demo |
+| Science Trial A | 1 of 4 | Class with available seats, the duplicate booking demo, and a failed payment |
 | Math Trial B | 3 of 4 | Last-seat race |
 | Science Trial C | 4 of 4 | Full class |
 
 - **Duplicate booking:** one child is already `confirmed` in Science Trial A. Try booking the same child into that class.
-- **Payment failure:** use a declined test card, or let the transaction expire in the Midtrans sandbox.
+- **Payment failure:** Bella's booking for Science Trial A is already `payment_failed`, from a denied payment. She holds no seat and can book that class again. To see it happen live, pay with a declined test card, or let the transaction expire in the Midtrans sandbox.
 - **Starting over:** the **Reset demo data** button restores this state. The data is defined once, in the Postgres function `reset_demo_data()`, which both `seed.sql` and the button call.
 
 ### Manual Demo Steps
@@ -219,6 +219,7 @@ lib/
     list-pending-bookings.ts
     get-booking-for-payment.ts
     create-payment-attempt.ts
+    confirm-payment.ts
     reset-demo-data.ts
   http.ts                               uuid check and JSON error helper
   midtrans.ts                           Snap transaction creation and signature verification
@@ -227,7 +228,7 @@ supabase/
   migrations/                           schema, indexes, confirm_payment and reset_demo_data functions
   seed.sql                              select reset_demo_data();
 tests/
-  helpers/db.ts                         data reset and fixtures
+  helpers/                              db reset, fixtures, signed Midtrans notifications
   *.test.ts                             call route handlers directly, no server needed
 ```
 
@@ -321,7 +322,7 @@ All endpoints accept and return JSON.
 | `GET` | `/api/classes` | List trial classes with remaining seats |
 | `POST` | `/api/bookings` | Create a `pending_payment` booking. 400 bad body, 403 child not the parent's, 404 unknown class, 409 duplicate or class already full |
 | `POST` | `/api/bookings/:id/pay` | Record a payment attempt with a new `order_id`, then create a Midtrans Snap transaction and return its token and redirect URL. 409 if the booking is no longer `pending_payment`, 502 if Midtrans fails |
-| `POST` | `/api/payments/midtrans/notification` | Midtrans webhook. Verifies the signature, then calls `confirm_payment` |
+| `POST` | `/api/payments/midtrans/notification` | Midtrans webhook. Verifies the signature, then calls `confirm_payment`. 401 on a bad signature, 200 for a status that is not final or an `order_id` it does not know, so Midtrans stops retrying |
 | `GET` | `/api/bookings/:id` | Get the booking status |
 | `GET` | `/api/classes/:id/roster` | List confirmed students |
 | `POST` | `/api/demo/reset` | Demo only. Deletes all bookings and restores the seed via `reset_demo_data()` |
@@ -341,9 +342,10 @@ Bookings with failed payments are not covered by the index, so parents can book 
 
    | Midtrans status | Meaning |
    |---|---|
-   | `settlement`, `capture` | Success |
+   | `settlement` | Success |
+   | `capture` | Success only when `fraud_status` is `accept`; a `challenge` waits for review |
    | `deny`, `cancel`, `expire`, `failure` | Failure |
-   | `pending` | Ignored |
+   | `pending` dan status lain | Ignored |
 
 5. The server calls the Postgres function `confirm_payment` via `supabase.rpc()`.
 

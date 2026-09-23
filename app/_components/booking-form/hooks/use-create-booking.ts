@@ -4,7 +4,7 @@ import type { Booking } from "@/lib/data/create-booking";
 
 type Input = { parentId: string; studentId: string; classId: string };
 
-export function useCreateBooking() {
+export function useCreateBooking({ onBooked }: { onBooked?: () => void } = {}) {
   const router = useRouter();
   const [booking, setBooking] = useState<Booking | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -23,8 +23,9 @@ export function useCreateBooking() {
       const body = await res.json();
       if (!res.ok) return setError(body.error ?? "Could not create the booking");
       setBooking(body.booking);
-      // Re-render the server sections, such as the list awaiting payment.
+      // Refresh the server sections and the seat counts.
       router.refresh();
+      onBooked?.();
     } catch {
       setError("Could not create the booking");
     } finally {

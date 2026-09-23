@@ -13,9 +13,13 @@ import { usePayBooking } from "./hooks/use-pay-booking";
 import { useStudents } from "./hooks/use-students";
 
 export function BookingForm({ parents }: { parents: Parent[] }) {
+  const { classes, loading: classesLoading, error: classesError, reload: reloadClasses } =
+    useClasses();
   const { booking, submitting, error: bookingError, createBooking, clearResult } =
-    useCreateBooking();
-  const { paying, outcome, error: payError, payBooking, clearPayment } = usePayBooking();
+    useCreateBooking({ onBooked: reloadClasses });
+  const { paying, outcome, error: payError, payBooking, clearPayment } = usePayBooking({
+    onFinished: reloadClasses,
+  });
   const { parentId, studentId, classId, chooseParent, chooseStudent, chooseClass } =
     useBookingSelection({
       onChange: () => {
@@ -24,7 +28,6 @@ export function BookingForm({ parents }: { parents: Parent[] }) {
       },
     });
   const { students, loading: studentsLoading, error: studentsError } = useStudents(parentId);
-  const { classes, loading: classesLoading, error: classesError } = useClasses();
   const loadError = studentsError ?? classesError;
   const canSubmit = Boolean(parentId && studentId && classId) && !submitting;
 

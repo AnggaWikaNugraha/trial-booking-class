@@ -128,13 +128,13 @@ Midtrans ─► POST /api/payments/midtrans/notification
                                               └─► kursi habis ─► rejected_class_full
 ```
 
-- [ ] Function `confirm_payment` (migrasi baru)
-- [ ] `lib/midtrans.ts`: verifikasi signature
-- [ ] Pemetaan status Midtrans ke sukses, gagal, atau abaikan
-- [ ] `POST /api/payments/midtrans/notification`
-- [ ] Helper tes untuk membuat notifikasi Midtrans bertanda tangan
-- [ ] Tes P3, N3, N4, N5, N6, N7
-- [ ] Tes rebutan kursi terakhir N8 dan N9
+- [x] Function `confirm_payment` (migrasi baru)
+- [x] `lib/midtrans.ts`: verifikasi signature
+- [x] Pemetaan status Midtrans ke sukses, gagal, atau abaikan
+- [x] `POST /api/payments/midtrans/notification`
+- [x] Helper tes untuk membuat notifikasi Midtrans bertanda tangan
+- [x] Tes P3, N3, N4, N5, N6, N7
+- [x] Tes rebutan kursi terakhir N8 dan N9
 
 ### Flow 5: Status Booking
 

@@ -18,7 +18,7 @@ declare global {
 // changes when the verified Midtrans webhook arrives.
 type Outcome = "submitted" | "failed" | "closed";
 
-export function usePayBooking() {
+export function usePayBooking({ onFinished }: { onFinished?: () => void } = {}) {
   const router = useRouter();
   const [paying, setPaying] = useState(false);
   const [outcome, setOutcome] = useState<Outcome | null>(null);
@@ -49,7 +49,10 @@ export function usePayBooking() {
   function finish(result: Outcome) {
     setOutcome(result);
     setPaying(false);
+    // Midtrans confirms through the webhook, which can land a moment later,
+    // so the seat count may still be one refresh behind.
     router.refresh();
+    onFinished?.();
   }
 
   function clearPayment() {
